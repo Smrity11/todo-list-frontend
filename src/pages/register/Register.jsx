@@ -1,5 +1,5 @@
 
-const Main = () => {
+const Register = () => {
     return (
         <div>
             
@@ -7,4 +7,4 @@ const Main = () => {
     );
 };
 
-export default Main;
+export default Register;
