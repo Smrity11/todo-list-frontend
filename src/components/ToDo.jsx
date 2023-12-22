@@ -1,12 +1,13 @@
 /* eslint-disable react/prop-types */
-import axios from "axios";
 import { AiFillEdit } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
-import { baseURL } from "../utils/constant";
+import useAxiosPublic from "../hook/useAxiosPublic";
 
 const ToDo = ({ text, id, setUpdateUI, setShowPopup, setPopupContent }) => {
+const axiospublic =useAxiosPublic()
+
   const deleteTodo = () => {
-    axios.delete(`${baseURL}/delete/${id}`).then((res) => {
+    axiospublic.delete('/delete/${id}').then((res) => {
       console.log(res.data);
       setUpdateUI((prevState) => !prevState);
     });

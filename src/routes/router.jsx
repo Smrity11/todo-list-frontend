@@ -4,6 +4,8 @@ import {
 import Main from "../layout/Main";
 import Home from "../pages/home/Home";
 import Login from "../pages/login/Login";
+import Register from "../pages/register/Register";
+import TodoList from "../pages/todolists/TodoList";
 
 
 export const router = createBrowserRouter([
@@ -16,6 +18,10 @@ export const router = createBrowserRouter([
         path: "/",
         element: <Home></Home>,
        },
+       {
+        path: "/todolist",
+        element: <TodoList></TodoList>,
+       },
       
     ],
    
@@ -23,6 +29,10 @@ export const router = createBrowserRouter([
 {
     path: "/login",
     element: <Login></Login>,
+   },
+{
+    path: "/register",
+    element: <Register></Register>,
    },
 
 

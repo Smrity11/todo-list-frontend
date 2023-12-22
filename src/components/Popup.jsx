@@ -1,15 +1,15 @@
 /* eslint-disable react/prop-types */
-import axios from "axios";
 import { useState } from "react";
 import { RxCross1 } from "react-icons/rx";
-import { baseURL } from "../utils/constant";
+import useAxiosPublic from "../hook/useAxiosPublic";
 
 const Popup = ({ setShowPopup, popupContent, setUpdateUI }) => {
   const [input, setInput] = useState(popupContent.text);
+  const axiospublic =useAxiosPublic()
 
   const updateToDo = () => {
-    axios
-      .put(`${baseURL}/update/${popupContent.id}`, { toDo: input })
+    axiospublic
+      .put('/update/${popupContent.id}', { toDo: input })
       .then((res) => {
         console.log(res.data);
         setUpdateUI((prevState) => !prevState);
