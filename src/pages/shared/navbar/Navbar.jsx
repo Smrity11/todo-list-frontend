@@ -35,12 +35,9 @@ const Navbar = () => {
       </li>
 
 
-
-     
-     
-      <li className="text-lg">
+{   user &&   <li className="text-lg">
         <NavLink
-          to="/todolist"
+          to="userDashboard/userProfile"
           className={({ isActive, isPending }) =>
             isPending
               ? "pending"
@@ -50,9 +47,9 @@ const Navbar = () => {
           }
         >
           {" "}
-         TODO LIST
+        Dashboard
         </NavLink>
-      </li>
+      </li>}
      
 
       <li className="text-lg">
@@ -144,14 +141,14 @@ const Navbar = () => {
              <p className="text-xs md:text-base text-center">{user?.displayName}</p>
              </div>
               
-              <button onClick={handleLogOut} className="btn rounded-lg md:rounded-full w-12 md:w-24 text-red-600 bg-transparent  text-xs lowercase md:text-base   border-red-600">
+              <button onClick={handleLogOut} className="btn rounded-lg md:rounded-full w-12 md:w-24 text-red-600 bg-white  text-xs lowercase md:text-base   border-red-600">
                 Sign Out
               </button>
             </>
           ) : (
             <Link
               to="/login"
-              className="btn rounded-lg text-xs md:text-base  md:rounded-full w-12 md:w-24 text-red-600 bg-transparent border-red-600"
+              className="btn rounded-lg text-xs md:text-base  md:rounded-full w-12 md:w-24 text-red-600 bg-white border-red-600"
             >
               Login
             </Link>

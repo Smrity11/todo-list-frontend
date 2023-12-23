@@ -10,7 +10,7 @@ const Banner = () => {
           boost productivity, and accomplish your goals. Simplify your life with easy-to-use
           task management. Get started now!
         </p>
-        <Link to="/tasks">
+        <Link to="/login">
           <button className="button text-bold text-black px-5 py-2 rounded border border-red-700 mt-9">
             Explore Now
           </button>
