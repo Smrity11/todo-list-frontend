@@ -54,18 +54,8 @@ function DashboardNavbar() {
             >
              Add Task
             </Link>
-            <Link
-              to="doctorProfile"
-              className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-500 mr-4"
-            >
-              Consultency
-            </Link>
-            <a
-              href="#"
-              className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-500"
-            >
-              UpdateInformation
-            </a>
+           
+           
           </div>
         </div>
       </div>

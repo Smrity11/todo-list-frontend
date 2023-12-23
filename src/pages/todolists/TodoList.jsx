@@ -1,9 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Popup from "../../components/Popup";
 import ToDo from "../../components/ToDo";
 import useAxiosPublic from "../../hook/useAxiosPublic";
 import { useForm } from "react-hook-form";
+import Swal from "sweetalert2";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import { AuthContext } from "../../provider/AuthProvider";
 
 const TodoList = () => {
     const [toDos, setToDos] = useState([]);
@@ -13,13 +17,30 @@ const TodoList = () => {
     const [popupContent, setPopupContent] = useState({});
     const axiospublic =useAxiosPublic()
     const { reset } = useForm();
+    const { user } = useContext(AuthContext);
+  
+    const fetchData = async () => {
+      try {
+        const response = await axiospublic.get("/allTodo");
+        setToDos(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
   
     useEffect(() => {
-      fetch('http://localhost:5000/allTodo' )
-      .then(res  => res.json())
-      .then( data => setToDos(data))
-  }, [updateUI]);
-  console.log(toDos);
+      fetchData(); // Fetch initial data
+      const intervalId = setInterval(() => {
+        fetchData(); // Poll for updates every 5 seconds
+      }, 5000);
+  
+      return () => clearInterval(intervalId); // Cleanup interval on component unmount
+    }, [updateUI]);
+ 
+  const UserEmail = toDos.filter(webData => webData.email === user.email);
+  const NewTodo = UserEmail.filter(webData => webData.todo === "newposted");
+  const Ongoing = UserEmail.filter(webData => webData.todo === "onGoing");
+  const Completed = UserEmail.filter(webData => webData.todo === "completed");
   
     const handleSubmit =async (e) => {
       e.preventDefault();
@@ -28,7 +49,9 @@ const TodoList = () => {
       const  task = form.task.value;
      
       const newTodo = {
-         task
+         task,
+         todo:'newposted',
+         email:user?.email
          
       };
 
@@ -38,7 +61,16 @@ const TodoList = () => {
     
         if (todoRes.data.insertedId) {
           // show success popup
-          alert('added')
+          toast('🦄 Task added', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            });
           reset();
          
         }
@@ -55,9 +87,38 @@ const TodoList = () => {
         // })
         // .catch((err) => console.log(err));
     };
+    const handleDelete = (_id) => {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axiospublic
+            .delete(`/allTodo/${_id}`)
+            .then((res) => {
+              if (res.data.deletedCount > 0) {
+                Swal.fire("Deleted!", "Your file has been deleted.", "success");
+                const remaining = toDos.filter((jobb) => jobb._id !== _id);
+                setToDos(remaining);
+              }
+            })
+            .catch((error) => {
+              console.error("Error deleting todo:", error);
+              // Handle error as needed
+            });
+        }
+      });
+    };
+    
   
     return (
       <div>
+       <ToastContainer />
  <div className="pt-[100px] grid justify-center">
         <div className="container  w-[470px] p-[20px]">
           <h1 className="title text-center font-bold text-2xl my-7">Add Todo List</h1>
@@ -89,10 +150,10 @@ const TodoList = () => {
           />
         )}
       </div>
-      <div className="grid grid-cols-3 justify-center items-center border p-5">
+      <div className="grid grid-cols-3 justify-center border p-5">
   <div className="list m-5 p-5 border">
   <p className="text-red-500 font-bold text-xl text-center">Todo</p>
-            {toDos.map((el) => (
+            {NewTodo.map((el) => (
               <ToDo
                 key={el._id}
                 text={el.task}
@@ -100,12 +161,13 @@ const TodoList = () => {
                 setUpdateUI={setUpdateUI}
                 setShowPopup={setShowPopup}
                 setPopupContent={setPopupContent}
+                handleDelete={handleDelete}
               />
             ))}
           </div>
           <div className="list m-5 p-5 border">
           <p className="text-red-500 font-bold text-xl text-center">On Going</p>
-            {toDos.map((el) => (
+            {Ongoing.map((el) => (
               <ToDo
                 key={el._id}
                 text={el.task}
@@ -113,12 +175,13 @@ const TodoList = () => {
                 setUpdateUI={setUpdateUI}
                 setShowPopup={setShowPopup}
                 setPopupContent={setPopupContent}
+                handleDelete={handleDelete}
               />
             ))}
           </div>
           <div className="list p-5 m-5 border">
           <p className="text-red-500 font-bold text-xl text-center">Completed</p>
-            {toDos.map((el) => (
+            {Completed.map((el) => (
               <ToDo
                 key={el._id}
                 text={el.task}
@@ -126,6 +189,7 @@ const TodoList = () => {
                 setUpdateUI={setUpdateUI}
                 setShowPopup={setShowPopup}
                 setPopupContent={setPopupContent}
+                handleDelete={handleDelete}
               />
             ))}
           </div>
